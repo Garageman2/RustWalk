@@ -1,8 +1,11 @@
 extern crate rand;
+extern crate image;
 use rand::Rng;
 use std::collections::{HashMap};
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::Path;
+use image::{ImageBuffer, RgbImage, Rgb};
 
 #[derive(Copy, Clone)]
 struct Agent
@@ -59,5 +62,22 @@ fn main() {
     }
 
     write_out(&grid).ok();
+
+    const SIZE: u32 = 128;
+
+    let mut img: RgbImage = ImageBuffer::new(SIZE,SIZE);
+
+    for x in 0..SIZE as u8
+    {
+        for y in 0..SIZE as u8
+        {
+            println!("The coordinates are {},{}", x,y);
+            *img.get_pixel_mut(x as u32,y as u32) = Rgb([x as u8,y as u8,40]);
+        }
+    }
+    *img.get_pixel_mut(0,0) = Rgb([255,255,255]);
+    img.put_pixel(10,10,Rgb([255,255,255]));
+    img.save("Test.jpg").unwrap();
+    //img.save("Test.jpg");
 
 }
