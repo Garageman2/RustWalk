@@ -63,21 +63,29 @@ fn main() {
 
     write_out(&grid).ok();
 
-    const SIZE: u32 = 128;
+    const SIZE: u32 = 256;
 
     let mut img: RgbImage = ImageBuffer::new(SIZE,SIZE);
 
-    for x in 0..SIZE as u8
+    for x in 0..SIZE
     {
-        for y in 0..SIZE as u8
+        for y in 0..SIZE
         {
             println!("The coordinates are {},{}", x,y);
-            *img.get_pixel_mut(x as u32,y as u32) = Rgb([x as u8,y as u8,40]);
+            let mut result: u8;
+            let a: i32 = (x as i32 - (SIZE/2) as i32);
+            let b: i32 = (y as i32 - (SIZE/2) as i32);
+            if grid.contains_key(&(a,b))
+            {
+                result = grid[&(a,b)].clamp(0,255) as u8;
+            }
+            else
+            {
+                 result = 0;
+            }
+            *img.get_pixel_mut(x,y) = Rgb([result,result,40]);
         }
     }
-    *img.get_pixel_mut(0,0) = Rgb([255,255,255]);
-    img.put_pixel(10,10,Rgb([255,255,255]));
     img.save("Test.jpg").unwrap();
-    //img.save("Test.jpg");
 
 }
