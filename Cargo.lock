@@ -9,6 +9,7 @@ dependencies = [
  "image",
  "itertools",
  "rand",
+ "rand_chacha",
 ]
 
 [[package]]
