@@ -121,19 +121,27 @@ fn main() {
         }
     }
     //TODO: note that 126 and 2 are hardcoded from 128 x 128
-    let width: usize = 252/freq.len();
 
-    let mut graph: RgbImage = ImageBuffer::from_fn(256,256,|x:u32,y:u32|{ return if (((x == 254) | (x == 1)) & (1 <= y && y <= 254)) | (((y == 1) | (y == 254)) & (1 <= x && x <= 254)) { Rgb([40, 40, 40]) } else { Rgb([200, 200, 200]) } });
+    const GRAPH_SIZE: u32 = 512;
+    const GRAPH_PAD: u32 = 2;
+
+    let width: usize = (GRAPH_SIZE - (2 * GRAPH_PAD)) as usize/freq.len();
+
+    let mut graph: RgbImage = ImageBuffer::from_fn(GRAPH_SIZE,GRAPH_SIZE,
+ |x:u32,y:u32|{ return if (((x == GRAPH_SIZE-GRAPH_PAD) | (x == GRAPH_PAD-1)) &
+    (GRAPH_PAD-1 <= y && y <= GRAPH_SIZE-GRAPH_PAD)) | (((y == GRAPH_PAD-1) |
+    (y == GRAPH_SIZE-GRAPH_PAD)) & (GRAPH_PAD-1 <= x && x <= GRAPH_SIZE-GRAPH_PAD))
+    { Rgb([40, 40, 40]) } else { Rgb([200, 200, 200]) } });
 
     let col = Rgb([0,20,80]);
     let mut offset: u32 = 0;
     for key in freq.keys().sorted()
     {
         let val: u32 = *freq.get(key).unwrap() as u32;
-        let height: u32 = ((200 / max) * val as i32) as u32;
+        let height: u32 = (((GRAPH_SIZE * 7 /8) / max as u32) * val) ;
         for x in offset..offset+width as u32+1
         {
-            for y in 254-height..254 as u32
+            for y in GRAPH_SIZE-GRAPH_PAD-height..GRAPH_SIZE-GRAPH_PAD as u32
             {
                 graph.put_pixel(x + 10, y, col);
             }
