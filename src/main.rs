@@ -1,7 +1,3 @@
-extern crate rand;
-extern crate image;
-extern crate itertools;
-extern crate rand_chacha;
 use rand::prelude::*;
 use rand_chacha::ChaCha8Rng;
 use std::collections::{HashMap};
@@ -83,29 +79,18 @@ fn main() {
     write_out(&grid).ok();
     println!("Text output complete");
 
-    const SIZE: u32 = 1024;
+    const SIZE: u32 = 512;
 
     let mut img: RgbImage = ImageBuffer::new(SIZE,SIZE);
 
-    for x in 0..SIZE
+    for (key, value) in grid.into_iter()
     {
-        for y in 0..SIZE
-        {
-            //TODO: refactor to go by key value pair instead so that outer pixels arent iterated
-            let result: u8;
-            let a: i32 = x as i32 - (SIZE/2) as i32;
-            let b: i32 = y as i32 - (SIZE/2) as i32;
-            if grid.contains_key(&(a,b))
-            {
-                result = grid[&(a,b)].clamp(0,255) as u8;
-            }
-            else
-            {
-                 result = 0;
-            }
-            *img.get_pixel_mut(x,y) = Rgb([0,result,0]);
-        }
+        println!("Key {},{} val {}",key.0,key.1,value);
+        let a = (key.0 + SIZE as i32/2).clamp(0, SIZE as i32) as u32;
+        let b = (key.1 + SIZE as i32/2).clamp(0, SIZE as i32) as u32;
+        *img.get_pixel_mut(a as u32,b as u32) = Rgb([0,value.clamp(0,255) as u8,0]);
     }
+
     img.save("Image.png").unwrap();
     println!("Image Output complete");
 
@@ -120,9 +105,8 @@ fn main() {
             max = *count;
         }
     }
-    //TODO: note that 126 and 2 are hardcoded from 128 x 128
 
-    const GRAPH_SIZE: u32 = 512;
+    const GRAPH_SIZE: u32 = 256;
     const GRAPH_PAD: u32 = 2;
 
     let width: usize = (GRAPH_SIZE - (2 * GRAPH_PAD)) as usize/freq.len();
