@@ -85,7 +85,6 @@ fn main() {
 
     for (key, value) in grid.into_iter()
     {
-        println!("Key {},{} val {}",key.0,key.1,value);
         let a = (key.0 + SIZE as i32/2).clamp(0, SIZE as i32) as u32;
         let b = (key.1 + SIZE as i32/2).clamp(0, SIZE as i32) as u32;
         *img.get_pixel_mut(a as u32,b as u32) = Rgb([0,value.clamp(0,255) as u8,0]);
